@@ -1,5 +1,6 @@
 package com.example.futta.domain.model
 
+import java.time.LocalDate
 import java.time.LocalTime
 
 @JvmInline
@@ -9,12 +10,18 @@ sealed class CalendarEvent{
     abstract val title: String
     abstract val description: String
     abstract val timeSpan: TimeSpan
+    abstract val date: LocalDate
+    abstract val cycleType: CycleType
+    abstract val cancelOnHolidays: Boolean
 
     class Default private constructor(
         override val id: EventId,
         override val title: String,
         override val description: String,
-        override val timeSpan: TimeSpan
+        override val timeSpan: TimeSpan,
+        override val date: LocalDate,
+        override val cycleType: CycleType,
+        override val cancelOnHolidays: Boolean
     ): CalendarEvent() {
         companion object {
             fun create(
@@ -22,13 +29,19 @@ sealed class CalendarEvent{
                 title: String,
                 description: String,
                 timeSlot: TimeSlot,
-                timeSpan: TimeSpan = TimeSpan(LocalTime.of(0,0), LocalTime.of(23,59, 59))
+                timeSpan: TimeSpan = TimeSpan(LocalTime.of(0,0), LocalTime.of(23,59, 59)),
+                date: LocalDate,
+                cycleType: CycleType,
+                cancelOnHolidays: Boolean = false
             ): CalendarEvent {
                 return Default(
                     id,
                     title,
                     description,
-                    getCorrespondingTime(timeSlot, timeSpan)
+                    getCorrespondingTime(timeSlot, timeSpan),
+                    date,
+                    cycleType,
+                    cancelOnHolidays
                 )
             }
         }
@@ -39,6 +52,9 @@ sealed class CalendarEvent{
         override val title: String,
         override val description: String,
         override val timeSpan: TimeSpan,
+        override val date: LocalDate,
+        override val cycleType: CycleType,
+        override val cancelOnHolidays: Boolean,
         val location: String,
         val roomUrl: String,
         val felixUrl: String
@@ -50,6 +66,8 @@ sealed class CalendarEvent{
                 description: String,
                 timeSlot: TimeSlot,
                 timeSpan: TimeSpan = TimeSpan(LocalTime.of(0,0), LocalTime.of(23,59, 59)),
+                date: LocalDate,
+                cycleType: CycleType = CycleType.WEEK,
                 location: String,
                 roomUrl: String,
                 felixUrl: String
@@ -60,6 +78,9 @@ sealed class CalendarEvent{
                     title,
                     description,
                     getCorrespondingTime(timeSlot, timeSpan),
+                    date,
+                    cycleType,
+                    cancelOnHolidays = true,
                     location,
                     roomUrl,
                     felixUrl
@@ -70,6 +91,10 @@ sealed class CalendarEvent{
 }
 
 data class TimeSpan(val timeStart: LocalTime, val timeEnd: LocalTime)
+
+enum class CycleType {
+    NONE, WEEK, MONTH, YEAR
+}
 
 enum class TimeSlot {
     ONE, TWO, THREE, FOUR, FIVE, SIX, FULL_DAY, CUSTOM
