@@ -99,16 +99,39 @@ sealed class LectureInfo {
         val location: String,
         val onlineUrl: String
     ): LectureInfo()
+
+    companion object {
+        fun createBasedOnValues(felixUrl: String?, location: String?, onlineUrl: String?): LectureInfo {
+            if(felixUrl == null) return LectureInfo.Unknown
+            else {
+                if(location == null && onlineUrl != null) return LectureInfo.Online(felixUrl = felixUrl, onlineUrl = onlineUrl)
+                if(location != null && onlineUrl == null) return LectureInfo.Local(felixUrl = felixUrl, location = location)
+                if(location != null && onlineUrl != null) return LectureInfo.Hybrid(felixUrl = felixUrl, onlineUrl = onlineUrl, location = location)
+                else return LectureInfo.Unknown
+            }
+        }
+        fun getValuesBasedOnType(lectureInfo: LectureInfo): Map<String, String?> {
+            return when(lectureInfo) {
+                is LectureInfo.Unknown -> emptyMap<String, String>()
+                is LectureInfo.Local -> mapOf(Pair("felixUrl", lectureInfo.felixUrl), Pair("location", lectureInfo.location), Pair("onlineUrl", null))
+                is LectureInfo.Online-> mapOf(Pair("felixUrl", lectureInfo.felixUrl), Pair("onlineUrl", lectureInfo.onlineUrl), Pair("location", null))
+                is LectureInfo.Hybrid -> mapOf(Pair("felixUrl", lectureInfo.felixUrl), Pair("location", lectureInfo.location), Pair("onlineUrl", lectureInfo.onlineUrl))
+            }
+        }
+    }
 }
 
 data class TimeSpan(val timeStart: LocalTime, val timeEnd: LocalTime)
 
 enum class CycleType {
-    NONE, WEEK, MONTH, YEAR
+    NONE, WEEK, MONTH, YEAR;
+    companion object {
+        fun getByOrdinal(value: Int?) = CycleType.values().find { it.ordinal == value }
+    }
 }
 
 enum class TimeSlot {
-    ONE, TWO, THREE, FOUR, FIVE, SIX, FULL_DAY, CUSTOM
+    CUSTOM,  ONE, TWO, THREE, FOUR, FIVE, SIX, FULL_DAY;
 }
 fun getCorrespondingTime(timeSlot: TimeSlot, timeSpan: TimeSpan): TimeSpan{
     return when (timeSlot){
