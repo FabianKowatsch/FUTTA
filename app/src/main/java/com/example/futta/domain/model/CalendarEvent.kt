@@ -55,9 +55,7 @@ sealed class CalendarEvent{
         override val date: LocalDate,
         override val cycleType: CycleType,
         override val cancelOnHolidays: Boolean,
-        val location: String,
-        val roomUrl: String,
-        val felixUrl: String
+        val lectureInfo: LectureInfo
     ): CalendarEvent() {
         companion object {
             fun create(
@@ -68,9 +66,7 @@ sealed class CalendarEvent{
                 timeSpan: TimeSpan = TimeSpan(LocalTime.of(0,0), LocalTime.of(23,59, 59)),
                 date: LocalDate,
                 cycleType: CycleType = CycleType.WEEK,
-                location: String,
-                roomUrl: String,
-                felixUrl: String
+                lectureInfo: LectureInfo
 
             ): CalendarEvent {
                 return Lecture(
@@ -81,13 +77,28 @@ sealed class CalendarEvent{
                     date,
                     cycleType,
                     cancelOnHolidays = true,
-                    location,
-                    roomUrl,
-                    felixUrl
+                    lectureInfo
                 )
             }
         }
     }
+}
+
+sealed class LectureInfo {
+    object Unknown: LectureInfo()
+    class Local(
+        val felixUrl: String,
+        val location: String
+    ): LectureInfo()
+    class Online(
+        val felixUrl: String,
+        val onlineUrl: String
+    ): LectureInfo()
+    class Hybrid(
+        val felixUrl: String,
+        val location: String,
+        val onlineUrl: String
+    ): LectureInfo()
 }
 
 data class TimeSpan(val timeStart: LocalTime, val timeEnd: LocalTime)
