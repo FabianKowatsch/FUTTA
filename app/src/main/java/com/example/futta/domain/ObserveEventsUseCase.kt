@@ -5,5 +5,5 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 
 class ObserveEventsUseCase {
-    suspend operator fun invoke() = calendarEventRepo.observeAllEvents().flowOn(Dispatchers.Default)
+    operator fun invoke() = calendarEventRepo.observeAllEvents().flowOn(Dispatchers.Default)
 }

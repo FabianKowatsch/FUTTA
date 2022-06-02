@@ -41,7 +41,7 @@ class CalendarEventRepository {
     ).toMutableList()
 
     suspend fun getAllEvents(): List<CalendarEvent> = allEvents
-    suspend fun observeAllEvents(): Flow<List<CalendarEvent>> = flowOf(allEvents)
+    fun observeAllEvents(): Flow<List<CalendarEvent>> = flowOf(allEvents)
     suspend fun getEventById(id: EventId): CalendarEvent? = allEvents.firstOrNull {
         it.id == id
     }
