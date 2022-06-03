@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
@@ -21,27 +22,34 @@ fun DayScreen(viewModel: DayViewModel = viewModel(), date: LocalDate) {
     val events by viewModel.bindUi(LocalContext.current, date).observeAsState(emptyList())
     DayScreenUi(date = date, events = events)
 }
+
 @Composable
 fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(end = 2.dp, bottom = 2.dp)
-            .background(Color(0xFF03B670), shape = RoundedCornerShape(4.dp))
-            .padding(4.dp)
+            modifier = Modifier
+                    .fillMaxSize()
+                    .padding(end = 2.dp, bottom = 2.dp)
+                    .background(Color(0xFF03B670), shape = RoundedCornerShape(4.dp))
+                    .padding(4.dp)
     ) {
 
-        Text(
-            text = date.toString(),
-            fontWeight = FontWeight.Bold,
-        )
+        Row() {
+            Text(text = date.toString(), )
+        }
+        if (events.isNotEmpty()) {
+            events.forEach { event->
+                Text(
+                        text = event.title,
+                        fontWeight = FontWeight.Bold,
+                )
+            }
 
-        //      if (event.description != null) {
-        //          Text(
-        //            text = event.description,
-        //          style = MaterialTheme.typography.body2,
-        //        maxLines = 1,
-        //      overflow = TextOverflow.Ellipsis,
-//}
+                }
+        else {
+            Text(
+                    text = "Für diesen Tag sind bisher keine Veranstaltungen geplant",
+                    overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
