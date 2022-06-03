@@ -15,7 +15,8 @@ sealed class BottomNavigationItem {
     object Day : BottomNavigationItem() {
         override val title = "Day"
         override val icon = "R.drawable.ic_day"
-        override val routeName = "day"
+        override val routeName = "day/{date}"
+        fun createRoute(date: String) = "day/$date"
     }
     object AddEvent : BottomNavigationItem() {
         override val title = "AddEvent"
