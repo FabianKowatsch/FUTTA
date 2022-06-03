@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.futta.feature.day.ui.DayScreen
 import com.example.futta.feature.month.ui.MonthScreenUi
 import java.time.LocalDate
 
@@ -20,7 +21,7 @@ fun MainNavigationGraph(navController: NavHostController) {
         composable(route = BottomNavigationItem.Day.routeName) { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date")
             requireNotNull(date) { "date parameter wasn't found. Please make sure it's set!" }
-            Text(text=BottomNavigationItem.Day.title + "$date")
+            DayScreen(date = LocalDate.parse(date))
         }
         composable(BottomNavigationItem.AddEvent.routeName) {
             Text(text=BottomNavigationItem.AddEvent.title)
@@ -28,4 +29,3 @@ fun MainNavigationGraph(navController: NavHostController) {
     }
 
 }
-const val ARG_DATE = "date"
