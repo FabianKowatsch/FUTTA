@@ -53,7 +53,7 @@ fun MonthScreenUi(navController: NavController) {
                 .wrapContentWidth(),
             fontWeight = FontWeight.SemiBold,
             fontSize = 10.sp,
-            color = Color(0xFF0A70C4),
+            color = Color(0xFF03B670),
             textAlign = TextAlign.Center,
         )
 
