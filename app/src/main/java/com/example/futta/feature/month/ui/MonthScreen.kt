@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.example.futta.feature.main.navigation.BottomNavigationItem
 import java.time.LocalDate
 import java.util.*
 
@@ -31,9 +32,9 @@ fun MonthScreenUi(navController: NavController) {
             update = { view ->
                 view.date = Calendar.getInstance().timeInMillis
                 view.setOnDateChangeListener { calendarView, y, m, d ->
-
-                        println(LocalDate.of(y, m, d))
-                        navController.navigate("day") {
+                        val date: LocalDate = LocalDate.of(y, m, d)
+                        println(date)
+                        navController.navigate(BottomNavigationItem.Day.createRoute((date.toString()))) {
                             navController.graph.startDestinationRoute?.let { screen_route ->
                                 popUpTo(screen_route) {
                                     saveState = true

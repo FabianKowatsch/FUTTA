@@ -3,21 +3,29 @@ package com.example.futta.feature.main.navigation
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.futta.feature.month.ui.MonthScreenUi
+import java.time.LocalDate
 
 @Composable
 fun MainNavigationGraph(navController: NavHostController) {
+
     NavHost(navController, startDestination = BottomNavigationItem.Month.routeName) {
         composable(BottomNavigationItem.Month.routeName) {
             MonthScreenUi(navController)
         }
-        composable(BottomNavigationItem.Day.routeName) {
-            Text(text=BottomNavigationItem.Day.title)
+        composable(route = BottomNavigationItem.Day.routeName) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date")
+            requireNotNull(date) { "date parameter wasn't found. Please make sure it's set!" }
+            Text(text=BottomNavigationItem.Day.title + "$date")
         }
         composable(BottomNavigationItem.AddEvent.routeName) {
             Text(text=BottomNavigationItem.AddEvent.title)
         }
     }
+
 }
+const val ARG_DATE = "date"
