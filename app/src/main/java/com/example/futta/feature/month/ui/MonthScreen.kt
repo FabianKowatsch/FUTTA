@@ -32,7 +32,7 @@ fun MonthScreenUi(navController: NavController) {
             update = { view ->
                 view.date = Calendar.getInstance().timeInMillis
                 view.setOnDateChangeListener { calendarView, y, m, d ->
-                        val date: LocalDate = LocalDate.of(y, m, d)
+                        val date: LocalDate = LocalDate.of(y, m+1, d)
                         println(date)
                         navController.navigate(BottomNavigationItem.Day.createRoute((date.toString()))) {
                             navController.graph.startDestinationRoute?.let { screen_route ->
@@ -41,7 +41,7 @@ fun MonthScreenUi(navController: NavController) {
                                 }
                             }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                         }
 
                 }

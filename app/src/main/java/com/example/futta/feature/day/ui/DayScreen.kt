@@ -32,7 +32,7 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
     ) {
 
         Text(
-            text = "Veranstaltung",
+            text = date.toString(),
             fontWeight = FontWeight.Bold,
         )
 
