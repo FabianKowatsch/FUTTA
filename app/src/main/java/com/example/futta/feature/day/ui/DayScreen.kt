@@ -29,17 +29,19 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
             modifier = Modifier
                     .fillMaxSize()
                     .padding(end = 2.dp, bottom = 2.dp)
-                    .background(Color(0xFF03B670), shape = RoundedCornerShape(4.dp))
+                    .background(Color(0xFF1C1C1C), shape = RoundedCornerShape(4.dp))
                     .padding(4.dp)
     ) {
 
         Row() {
-            Text(text = date.toString(), )
+            Text(text = date.toString(),
+                    color = Color(0xFFFFFFFF),)
         }
         if (events.isNotEmpty()) {
             events.forEach { event->
                 Text(
                         text = event.title,
+                        color = Color(0xFFFFFFFF),
                         fontWeight = FontWeight.Bold,
                 )
             }
@@ -48,6 +50,7 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
         else {
             Text(
                     text = "Für diesen Tag sind bisher keine Veranstaltungen geplant",
+                    color = Color(0xFFFFFFFF),
                     overflow = TextOverflow.Ellipsis,
             )
         }
