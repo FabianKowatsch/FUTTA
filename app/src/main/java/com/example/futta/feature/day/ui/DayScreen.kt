@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.futta.feature.main.navigation.BottomNavigationItem
@@ -30,7 +31,7 @@ fun DayScreen(viewModel: DayViewModel = viewModel(), date: LocalDate, navControl
 }
 
 @Composable
-fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
+fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>, navController: NavController) {
     val dateString = date.toString()
     Scaffold(
             topBar = {
@@ -53,7 +54,7 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
 
             if (events.isNotEmpty()) {
                 events.forEach { event ->
-                    CalendarEventTeaserItem(event)
+                    CalendarEventTeaserItem(event, navController = navController)
 
                 }
 
