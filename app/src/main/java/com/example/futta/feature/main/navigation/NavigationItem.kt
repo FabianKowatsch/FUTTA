@@ -1,10 +1,15 @@
 package com.example.futta.feature.main.navigation
 
-import com.example.futta.R
+import com.example.futta.domain.model.EventId
 
 sealed class NavigationItem {
     abstract val routeName: String
     abstract val title: String
+    object Event : NavigationItem() {
+        override val routeName = "event/{eventId}"
+        override val title = "Event"
+        fun createRoute(eventId: EventId) = "day/${eventId.value}"
+    }
 }
 
 sealed class BottomNavigationItem: NavigationItem() {
