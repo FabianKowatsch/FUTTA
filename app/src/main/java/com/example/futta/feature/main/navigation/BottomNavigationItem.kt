@@ -2,9 +2,14 @@ package com.example.futta.feature.main.navigation
 
 import com.example.futta.R
 
-sealed class BottomNavigationItem {
+sealed class NavigationItem {
     abstract val routeName: String
     abstract val title: String
+}
+
+sealed class BottomNavigationItem: NavigationItem() {
+    abstract override val routeName: String
+    abstract override val title: String
     abstract val icon: String
 
     object Month : BottomNavigationItem() {
@@ -24,3 +29,4 @@ sealed class BottomNavigationItem {
         override val routeName = "addevent"
     }
 }
+
