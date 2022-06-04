@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -29,8 +30,10 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
             modifier = Modifier
                     .fillMaxSize()
                     .padding(end = 2.dp, bottom = 2.dp)
-                    .background(Color(0xFF1C1C1C), shape = RoundedCornerShape(4.dp))
-                    .padding(4.dp)
+                    .background(Color(0xFF777777), shape = RoundedCornerShape(4.dp))
+                    .padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+
     ) {
 
         Row() {
@@ -39,11 +42,8 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
         }
         if (events.isNotEmpty()) {
             events.forEach { event->
-                Text(
-                        text = event.title,
-                        color = Color(0xFFFFFFFF),
-                        fontWeight = FontWeight.Bold,
-                )
+                CalendarEventTeaserItem(event)
+
             }
 
                 }
