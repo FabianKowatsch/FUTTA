@@ -1,5 +1,6 @@
 package com.example.futta.feature.event.ui
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,5 +17,10 @@ fun CalendarEventScreen(viewModel: CalendarEventViewModel = viewModel(), eventId
 
 @Composable
 fun CalendarEventScreenUi(event: CalendarEventUI?) {
+    if(event != null){
+        Text(
+            text = "${event.title}, ${event.description}"
+        )
+    }
 
 }

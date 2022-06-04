@@ -16,16 +16,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import java.time.LocalDate
 
 @Composable
-fun DayScreen(viewModel: DayViewModel = viewModel(), date: LocalDate) {
+fun DayScreen(viewModel: DayViewModel = viewModel(), date: LocalDate, navController: NavController) {
     val events by viewModel.bindUi(LocalContext.current, date).observeAsState(emptyList())
-    DayScreenUi(date = date, events = events)
+    DayScreenUi(date = date, events = events, navController = navController)
 }
 
 @Composable
-fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
+fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>, navController: NavController) {
     Column(
             modifier = Modifier
                     .fillMaxSize()
@@ -42,7 +43,7 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>) {
         }
         if (events.isNotEmpty()) {
             events.forEach { event->
-                CalendarEventTeaserItem(event)
+                CalendarEventTeaserItem(event, navController)
 
             }
 
