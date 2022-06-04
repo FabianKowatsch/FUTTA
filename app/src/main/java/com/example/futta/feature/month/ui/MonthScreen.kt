@@ -31,6 +31,7 @@ fun MonthScreenUi(navController: NavController) {
             modifier = Modifier.wrapContentWidth(),
             update = { view ->
                 view.date = Calendar.getInstance().timeInMillis
+                view.firstDayOfWeek = 2
                 view.setOnDateChangeListener { calendarView, y, m, d ->
                         val date: LocalDate = LocalDate.of(y, m+1, d)
                         println(date)
