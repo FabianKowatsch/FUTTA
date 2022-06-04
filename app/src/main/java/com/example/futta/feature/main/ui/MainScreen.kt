@@ -29,20 +29,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
 fun MainScreenUI() {
     //MonthScreenUi()
     val navController = rememberNavController()
-
     Scaffold(
-        topBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
-            TopAppBar(
-                title = {
-                    when (currentRoute) {
-                        Month.routeName -> Text(Month.title)
-                        Day.routeName -> Text(Day.title)
-                    }
-                },
-            )
-        },
         bottomBar = { MainBottomNavigation(navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

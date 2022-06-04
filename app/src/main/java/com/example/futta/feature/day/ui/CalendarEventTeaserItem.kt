@@ -24,6 +24,7 @@ fun CalendarEventTeaserItem(event: CalendarEventTeaserUI) {
     Card(
             modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top=2.dp)
     ) {
         Column(
 
