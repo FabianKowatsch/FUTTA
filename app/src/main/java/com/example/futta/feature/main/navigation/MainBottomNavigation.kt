@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.futta.R
+import java.time.LocalDate
 
 @Composable
 fun MainBottomNavigation(navController: NavController) {
@@ -29,14 +30,18 @@ fun MainBottomNavigation(navController: NavController) {
                     Text(text = navItem.title)
                 },
                 onClick = {
-                    navController.navigate(navItem.routeName) {
+                   val route =  when(navItem.routeName){
+                        BottomNavigationItem.Day.routeName -> BottomNavigationItem.Day.createRoute("${LocalDate.now()}")
+                       else -> navItem.routeName
+                    }
+                    navController.navigate(route) {
                         navController.graph.startDestinationRoute?.let { screen_route ->
                             popUpTo(screen_route) {
                                 saveState = true
                             }
                         }
                         launchSingleTop = true
-                        restoreState = true
+                        restoreState = false
                     }
                 },
             )
