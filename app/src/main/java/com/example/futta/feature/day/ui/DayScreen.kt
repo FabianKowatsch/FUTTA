@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.futta.R
 import com.example.futta.feature.main.navigation.BottomNavigationItem
 import java.time.LocalDate
 
@@ -35,11 +37,16 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>, navControl
     val dateString = date.toString()
     Scaffold(
             topBar = {
-                TopAppBar(
-                        title = {
-                            Text(dateString)
-                        }
-                )
+                Column(modifier = Modifier
+                        .background(colorResource(id = R.color.green_3100))
+                        .fillMaxWidth()
+                        .padding(10.dp, 2.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                            text = dateString,
+                            color = colorResource(id = R.color.white)
+                    )
+                }
             },
     ) {
         Column(
