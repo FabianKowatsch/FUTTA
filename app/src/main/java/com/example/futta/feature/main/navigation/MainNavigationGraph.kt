@@ -23,7 +23,7 @@ fun MainNavigationGraph(navController: NavHostController) {
         composable(route = BottomNavigationItem.Day.routeName) { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date")
             requireNotNull(date) { "date parameter wasn't found. Please make sure it's set!" }
-            DayScreen(date = LocalDate.parse(date))
+            DayScreen(date = LocalDate.parse(date), navController = navController)
         }
         composable(route = NavigationItem.Event.routeName) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId")

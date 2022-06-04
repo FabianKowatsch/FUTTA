@@ -8,7 +8,7 @@ sealed class NavigationItem {
     object Event : NavigationItem() {
         override val routeName = "event/{eventId}"
         override val title = "Event"
-        fun createRoute(eventId: EventId) = "day/${eventId.value}"
+        fun createRoute(eventId: EventId) = "event/${eventId.value}"
     }
 }
 
