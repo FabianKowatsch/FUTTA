@@ -1,5 +1,6 @@
 package com.example.futta.feature.main.navigation
 
+import com.example.futta.R
 import com.example.futta.domain.model.EventId
 
 sealed class NavigationItem {
@@ -15,22 +16,22 @@ sealed class NavigationItem {
 sealed class BottomNavigationItem: NavigationItem() {
     abstract override val routeName: String
     abstract override val title: String
-    abstract val icon: String
+    abstract val icon: Int
 
     object Month : BottomNavigationItem() {
         override val routeName = "month"
         override val title = "Month"
-        override val icon = "R.drawable.ic_month"
+        override val icon = R.drawable.ic_month
     }
     object Day : BottomNavigationItem() {
         override val title = "Day"
-        override val icon = "R.drawable.ic_day"
+        override val icon = R.drawable.ic_day
         override val routeName = "day/{date}"
         fun createRoute(date: String) = "day/$date"
     }
     object AddEvent : BottomNavigationItem() {
         override val title = "AddEvent"
-        override val icon = "R.drawable.ic_add_event"
+        override val icon = R.drawable.ic_add_event
         override val routeName = "addevent"
     }
 }

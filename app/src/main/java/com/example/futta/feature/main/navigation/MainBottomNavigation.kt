@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.futta.R
@@ -27,7 +28,7 @@ fun MainBottomNavigation(navController: NavController) {
                     modifier = Modifier.background(colorResource(id = R.color.green_3100)),
                 selected = currentRoute == navItem.routeName,
                 icon = {
-                    Text(text = navItem.title)
+                   Icon(painter = painterResource(navItem.icon), contentDescription = navItem.title)
                 },
                 onClick = {
                    val route =  when(navItem.routeName){
