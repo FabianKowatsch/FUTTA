@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.futta.domain.model.EventId
+import com.example.futta.feature.addEvent.ui.AddEventScreen
 import com.example.futta.feature.day.ui.DayScreen
 import com.example.futta.feature.event.ui.CalendarEventScreen
 import com.example.futta.feature.month.ui.MonthScreenUi
@@ -31,7 +32,7 @@ fun MainNavigationGraph(navController: NavHostController) {
             CalendarEventScreen(eventId = EventId(eventId))
         }
         composable(BottomNavigationItem.AddEvent.routeName) {
-            Text(text = BottomNavigationItem.AddEvent.title)
+            AddEventScreen()
         }
     }
 
