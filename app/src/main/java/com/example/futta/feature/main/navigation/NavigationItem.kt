@@ -1,5 +1,10 @@
 package com.example.futta.feature.main.navigation
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.futta.domain.model.EventId
 
 sealed class NavigationItem {
@@ -15,22 +20,22 @@ sealed class NavigationItem {
 sealed class BottomNavigationItem: NavigationItem() {
     abstract override val routeName: String
     abstract override val title: String
-    abstract val icon: String
+    abstract val icon: ImageVector
 
     object Month : BottomNavigationItem() {
         override val routeName = "month"
         override val title = "Month"
-        override val icon = "R.drawable.ic_month"
+        override val icon = Icons.Outlined.DateRange
     }
     object Day : BottomNavigationItem() {
         override val title = "Day"
-        override val icon = "R.drawable.ic_day"
+        override val icon = Icons.Outlined.Notifications
         override val routeName = "day/{date}"
         fun createRoute(date: String) = "day/$date"
     }
     object AddEvent : BottomNavigationItem() {
-        override val title = "AddEvent"
-        override val icon = "R.drawable.ic_add_event"
+        override val title = "Add Event"
+        override val icon = Icons.Outlined.AddCircle
         override val routeName = "addevent"
     }
 }
