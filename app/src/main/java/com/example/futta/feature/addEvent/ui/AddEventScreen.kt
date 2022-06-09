@@ -1,20 +1,23 @@
 package com.example.futta.feature.addEvent.ui
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import com.example.futta.domain.model.CycleType
+import com.example.futta.domain.model.*
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -23,29 +26,45 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAccessor
-import java.time.temporal.TemporalUnit
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.toDuration
+import java.util.*
 
 @Composable
-fun AddEventScreen() {
-    EditEventScreenUi()
+fun AddEventScreen(viewModel: AddEventViewModel = viewModel()) {
+    val event by viewModel.bindUi(LocalContext.current).observeAsState(
+        UpdateCalendarEventUI(
+            id = EventId(UUID.randomUUID().toString()),
+            title = "Title",
+            description = "Description",
+            timeSpan = TimeSpan(
+                LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                LocalTime.now().truncatedTo(ChronoUnit.MINUTES)
+            ),
+            timeSlot = TimeSlot.CUSTOM,
+            cycleType = CycleType.WEEK,
+            cancelOnHolidays = true,
+            date = LocalDate.now(),
+            lectureInfo = LectureInfo.Hybrid("felixUrl", "location", "onlineUrl")
+        )
+    )
+    UpdateEventScreenUi(event, viewModel::onAddEvent)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EditEventScreenUi() {
+fun UpdateEventScreenUi(event: UpdateCalendarEventUI, saveEvent: (UpdateCalendarEventUI) -> Unit) {
     val fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
-    var title by rememberSaveable { mutableStateOf(value = "") }
-    var description by rememberSaveable { mutableStateOf(value = "") }
-    var timeStart by rememberSaveable { mutableStateOf(LocalTime.now().truncatedTo(ChronoUnit.MINUTES))}
-    var timeEnd by rememberSaveable { mutableStateOf(LocalTime.now().truncatedTo(ChronoUnit.MINUTES)) }
-    var date by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(CycleType.WEEK) }
-    var cancelOnHoldidays by rememberSaveable { mutableStateOf(value = "") }
-    var location by rememberSaveable { mutableStateOf(value = "") }
-    var onlineUrl by rememberSaveable { mutableStateOf(value = "") }
-    var felixUrl by rememberSaveable { mutableStateOf(value = "") }
+    var title by rememberSaveable { mutableStateOf(value = event.title) }
+    var description by rememberSaveable { mutableStateOf(value = event.description) }
+    var timeStart by rememberSaveable { mutableStateOf(value = event.timeSpan.timeStart) }
+    var timeEnd by rememberSaveable { mutableStateOf(value = event.timeSpan.timeEnd) }
+    var date by rememberSaveable { mutableStateOf(value = event.date) }
+    val (cycleType, onCycleTypeChange) = remember { mutableStateOf(value = event.cycleType) }
+    val (timeSlot, onTimeSlotChange) = remember { mutableStateOf(value = event.timeSlot) }
+    var cancelOnHoldidays by rememberSaveable { mutableStateOf(value = event.cancelOnHolidays) }
+    val lectureInfoMap = LectureInfo.getValuesBasedOnType(event.lectureInfo)
+    var location by rememberSaveable { mutableStateOf(value = lectureInfoMap["location"]) }
+    var onlineUrl by rememberSaveable { mutableStateOf(value = lectureInfoMap["onlineUrl"]) }
+    var felixUrl by rememberSaveable { mutableStateOf(value = lectureInfoMap["felixUrl"]) }
     val timePickerStart =
         MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_24H)
@@ -62,84 +81,289 @@ fun EditEventScreenUi() {
         .setTitleText("Select date")
         .build()
     timePickerStart.addOnPositiveButtonClickListener {
-        timeStart = LocalTime.of(timePickerStart.hour, timePickerStart.minute).truncatedTo(ChronoUnit.MINUTES)
+        timeStart = LocalTime.of(timePickerStart.hour, timePickerStart.minute)
+            .truncatedTo(ChronoUnit.MINUTES)
     }
     timePickerEnd.addOnPositiveButtonClickListener {
-        timeEnd = LocalTime.of(timePickerEnd.hour, timePickerEnd.minute).truncatedTo(ChronoUnit.MINUTES)
+        timeEnd =
+            LocalTime.of(timePickerEnd.hour, timePickerEnd.minute).truncatedTo(ChronoUnit.MINUTES)
     }
     datePicker.addOnPositiveButtonClickListener {
         date = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
     }
+    val openCycleTypeDialog = remember { mutableStateOf(false) }
+    val openTimeSlotDialog = remember { mutableStateOf(false) }
 
-    Column() {
-        TextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("title") },
-            singleLine = true,
-            modifier = Modifier.padding(5.dp)
-        )
-        TextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("description") },
-            singleLine = false,
-            modifier = Modifier.padding(5.dp)
-        )
-        Text(
-            text = "$timeStart",
-            modifier = Modifier
-                .clickable(
-                    onClick = {
-                        timePickerStart.show(fragmentManager, "TimePicker")
-                    }
-                )
-                .padding(5.dp)
-        )
-        Text(
-            text = "$timeEnd",
-            modifier = Modifier
-                .clickable(
-                    onClick = {
-                        timePickerStart.show(fragmentManager, "TimePicker")
-                    }
-                )
-                .padding(5.dp)
-        )
-        Text(
-            text = "$date",
-            modifier = Modifier
-                .clickable(
-                    onClick = {
-                        datePicker.show(fragmentManager, "DatePicker")
-                    }
-                )
-                .padding(5.dp)
-        )
-        Column(Modifier.selectableGroup()) {
-            CycleType.values().forEach { type ->
-                Row(
-                    Modifier
+    val scrollState = rememberLazyListState()
+    LazyColumn(state = scrollState) {
+        items(count = 1) {
+            ListItem {
+                TextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("title") },
+                    singleLine = true,
+                    modifier = Modifier
+                        .padding(5.dp)
                         .fillMaxWidth()
-                        .height(56.dp)
-                        .selectable(
-                            selected = (type == selectedOption),
-                            onClick = { onOptionSelected(type) },
-                        )
-                        .padding(horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = (type == selectedOption),
-                        onClick = null
-                    )
+                )
+            }
+            Divider()
+            ListItem {
+                TextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("description") },
+                    singleLine = false,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                )
+            }
+            ListItem(
+                text = {
                     Text(
-                        text = type.toString(),
-                        modifier = Modifier.padding(start = 16.dp)
+                        text = "Selected timeslot: $timeSlot",
+                        modifier = Modifier.padding(5.dp)
+                    )
+                },
+                modifier = Modifier
+                    .clickable(
+                        onClick = { openTimeSlotDialog.value = true }
+                    )
+            )
+            when(timeSlot) {
+                TimeSlot.CUSTOM -> {
+                    Divider()
+                    ListItem(
+                        text = {
+                            Text(
+                                text = "From: $timeStart",
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        },
+                        modifier = Modifier
+                            .clickable(
+                                onClick = {
+                                    timePickerStart.show(fragmentManager, "TimePickerStart")
+                                }
+                            )
+                    )
+                    Divider()
+                    ListItem(
+                        text = {
+                            Text(
+                                text = "To: $timeEnd",
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        },
+                        modifier = Modifier
+                            .clickable(
+                                onClick = {
+                                    timePickerEnd.show(fragmentManager, "TimePickerEnd")
+                                }
+                            )
+                    )
+                }
+                else -> Unit
+            }
+
+            Divider()
+            ListItem(
+                text = {
+                    Text(
+                        text = "Selected date: $date",
+                        modifier = Modifier.padding(5.dp)
+                    )
+                },
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            datePicker.show(fragmentManager, "DatePicker")
+                        }
+                    )
+            )
+            Divider()
+            ListItem(
+                text = {
+                    Text(
+                        text = "Selected cycletype: $cycleType",
+                        modifier = Modifier.padding(5.dp)
+                    )
+                },
+                modifier = Modifier
+                    .clickable(
+                        onClick = { openCycleTypeDialog.value = true }
+                    )
+            )
+            Divider()
+            Row() {
+                Text(text = "cancel on holidays", modifier = Modifier.padding(5.dp))
+                Switch(
+                    checked = cancelOnHoldidays,
+                    onCheckedChange = { cancelOnHoldidays = it }
+                )
+            }
+
+            felixUrl?.let { url ->
+                Divider()
+                ListItem {
+                    TextField(
+                        value = url,
+                        onValueChange = { felixUrl = it },
+                        label = { Text("Felix-Url") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     )
                 }
             }
+            location?.let { loc ->
+                Divider()
+                ListItem {
+                    TextField(
+                        value = loc,
+                        onValueChange = { location = it },
+                        label = { Text("Location") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            }
+            onlineUrl?.let { url ->
+                Divider()
+                ListItem {
+                    TextField(
+                        value = url,
+                        onValueChange = { onlineUrl = it },
+                        label = { Text("title") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            }
+            Divider()
+            FloatingActionButton(
+                content = { Text(text = "save") },
+                onClick = {
+                    saveEvent(
+                        event.copy(
+                            title = title,
+                            description = description,
+                            timeSpan = TimeSpan(timeStart, timeEnd),
+                            date = date,
+                            timeSlot = timeSlot,
+                            cycleType = cycleType,
+                            cancelOnHolidays = cancelOnHoldidays,
+                            lectureInfo = LectureInfo.createBasedOnValues(
+                                felixUrl,
+                                location,
+                                onlineUrl
+                            )
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+            )
         }
-
     }
+
+    if (openCycleTypeDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openCycleTypeDialog.value = false
+            },
+            title = {
+                Text(text = "Select the cycle type")
+            },
+            text = {
+                Column(Modifier.selectableGroup()) {
+                    CycleType.values().forEach { type ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .selectable(
+                                    selected = (type == cycleType),
+                                    onClick = { onCycleTypeChange(type) },
+                                )
+                                .padding(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (type == cycleType),
+                                onClick = null
+                            )
+                            Text(
+                                text = type.toString(),
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openCycleTypeDialog.value = false
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            }
+        )
+    }
+    if (openTimeSlotDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openTimeSlotDialog.value = false
+            },
+            title = {
+                Text(text = "Select the cycle type")
+            },
+            text = {
+                Column(Modifier.selectableGroup()) {
+                    TimeSlot.values().forEach { slot ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .selectable(
+                                    selected = (slot == timeSlot),
+                                    onClick = { onTimeSlotChange(slot) },
+                                )
+                                .padding(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (slot == timeSlot),
+                                onClick = null
+                            )
+                            Text(
+                                text = slot.toString(),
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openTimeSlotDialog.value = false
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            }
+        )
+    }
+
 }
