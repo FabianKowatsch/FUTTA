@@ -19,12 +19,13 @@ class CalendarEventViewModel : ViewModel() {
                 is CalendarEvent.Lecture -> event.lectureInfo
             }
             val result = CalendarEventUI(
-                id = event.id,
-                title = event.title,
-                description = event.description,
-                timeSpan = event.timeSpan,
-                cycleType = event.cycleType,
-                lectureInfo = lectureInfo
+                    id = event.id,
+                    title = event.title,
+                    description = event.description,
+                    date = event.date,
+                    timeSpan = event.timeSpan,
+                    cycleType = event.cycleType,
+                    lectureInfo = lectureInfo
             )
             emit(result)
         }
