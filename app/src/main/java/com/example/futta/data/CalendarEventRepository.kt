@@ -12,7 +12,7 @@ class CalendarEventRepository {
         CalendarEvent.Default.create(
             id = EventId("6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"),
             title = "birthday max",
-            description = "this is an event",
+            description = "this is an event and this is some additional text to make the textblock larger. The User should now be able to see some more lines of text description.",
             timeSlot = TimeSlot.FULL_DAY ,
             date = LocalDate.now(),
             cycleType = CycleType.NONE
@@ -33,7 +33,8 @@ class CalendarEventRepository {
             title = "economy",
             description = "this event shouldn't be attended as well",
             timeSlot = TimeSlot.THREE,
-            date = LocalDate.now(),
+            date = LocalDate.of(2022,6,3),
+
             lectureInfo = LectureInfo.Online(
                 onlineUrl = "url.com",
                 felixUrl = "url2.com",)
