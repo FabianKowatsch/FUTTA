@@ -9,6 +9,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
 import com.example.futta.domain.model.*
+import com.example.futta.feature.main.navigation.BottomNavigationItem
+import com.example.futta.feature.main.ui.MainViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -29,7 +35,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 @Composable
-fun AddEventScreen(viewModel: AddEventViewModel = viewModel()) {
+fun AddEventScreen(viewModel: AddEventViewModel = viewModel(), navController: NavController) {
     val event by viewModel.bindUi(LocalContext.current).observeAsState(
         UpdateCalendarEventUI(
             id = EventId(UUID.randomUUID().toString()),
@@ -46,12 +52,16 @@ fun AddEventScreen(viewModel: AddEventViewModel = viewModel()) {
             lectureInfo = LectureInfo.Hybrid("felixUrl", "location", "onlineUrl")
         )
     )
-    UpdateEventScreenUi(event, viewModel::onAddEvent)
+    UpdateEventScreenUi(event, viewModel::onAddEvent, navController)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UpdateEventScreenUi(event: UpdateCalendarEventUI, saveEvent: (UpdateCalendarEventUI) -> Unit) {
+fun UpdateEventScreenUi(
+    event: UpdateCalendarEventUI,
+    saveEvent: (UpdateCalendarEventUI) -> Unit,
+    navController: NavController
+) {
     val fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
     var title by rememberSaveable { mutableStateOf(value = event.title) }
     var description by rememberSaveable { mutableStateOf(value = event.description) }
@@ -95,150 +105,46 @@ fun UpdateEventScreenUi(event: UpdateCalendarEventUI, saveEvent: (UpdateCalendar
     val openTimeSlotDialog = remember { mutableStateOf(false) }
 
     val scrollState = rememberLazyListState()
-    LazyColumn(state = scrollState) {
-        items(count = 1) {
-            ListItem {
-                TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("title") },
-                    singleLine = true,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
+    Scaffold(floatingActionButton = {
+        FloatingActionButton(
+            content = { Icon(imageVector = Icons.Outlined.Check, contentDescription = "") },
+            onClick = {
+                saveEvent(
+                    event.copy(
+                        title = title,
+                        description = description,
+                        timeSpan = TimeSpan(timeStart, timeEnd),
+                        date = date,
+                        timeSlot = timeSlot,
+                        cycleType = cycleType,
+                        cancelOnHolidays = cancelOnHoldidays,
+                        lectureInfo = LectureInfo.createBasedOnValues(
+                            felixUrl,
+                            location,
+                            onlineUrl
+                        )
+                    )
                 )
-            }
-            Divider()
-            ListItem {
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("description") },
-                    singleLine = false,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                )
-            }
-            ListItem(
-                text = {
-                    Text(
-                        text = "Selected timeslot: $timeSlot",
-                        modifier = Modifier.padding(5.dp)
-                    )
-                },
-                modifier = Modifier
-                    .clickable(
-                        onClick = { openTimeSlotDialog.value = true }
-                    )
-            )
-            when(timeSlot) {
-                TimeSlot.CUSTOM -> {
-                    Divider()
-                    ListItem(
-                        text = {
-                            Text(
-                                text = "From: $timeStart",
-                                modifier = Modifier.padding(5.dp)
-                            )
-                        },
-                        modifier = Modifier
-                            .clickable(
-                                onClick = {
-                                    timePickerStart.show(fragmentManager, "TimePickerStart")
-                                }
-                            )
-                    )
-                    Divider()
-                    ListItem(
-                        text = {
-                            Text(
-                                text = "To: $timeEnd",
-                                modifier = Modifier.padding(5.dp)
-                            )
-                        },
-                        modifier = Modifier
-                            .clickable(
-                                onClick = {
-                                    timePickerEnd.show(fragmentManager, "TimePickerEnd")
-                                }
-                            )
-                    )
-                }
-                else -> Unit
-            }
-
-            Divider()
-            ListItem(
-                text = {
-                    Text(
-                        text = "Selected date: $date",
-                        modifier = Modifier.padding(5.dp)
-                    )
-                },
-                modifier = Modifier
-                    .clickable(
-                        onClick = {
-                            datePicker.show(fragmentManager, "DatePicker")
+                navController.navigate(BottomNavigationItem.Day.createRoute("${date}")) {
+                    navController.graph.startDestinationRoute?.let { screen_route ->
+                        popUpTo(screen_route) {
+                            saveState = true
                         }
-                    )
-            )
-            Divider()
-            ListItem(
-                text = {
-                    Text(
-                        text = "Selected cycletype: $cycleType",
-                        modifier = Modifier.padding(5.dp)
-                    )
-                },
-                modifier = Modifier
-                    .clickable(
-                        onClick = { openCycleTypeDialog.value = true }
-                    )
-            )
-            Divider()
-            Row() {
-                Text(text = "cancel on holidays", modifier = Modifier.padding(5.dp))
-                Switch(
-                    checked = cancelOnHoldidays,
-                    onCheckedChange = { cancelOnHoldidays = it }
-                )
+                    }
+                    launchSingleTop = true
+                    restoreState = false
+                }
             }
+        )
+    }) {
 
-            felixUrl?.let { url ->
-                Divider()
+
+        LazyColumn(state = scrollState) {
+            items(count = 1) {
                 ListItem {
                     TextField(
-                        value = url,
-                        onValueChange = { felixUrl = it },
-                        label = { Text("Felix-Url") },
-                        singleLine = true,
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxWidth()
-                    )
-                }
-            }
-            location?.let { loc ->
-                Divider()
-                ListItem {
-                    TextField(
-                        value = loc,
-                        onValueChange = { location = it },
-                        label = { Text("Location") },
-                        singleLine = true,
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxWidth()
-                    )
-                }
-            }
-            onlineUrl?.let { url ->
-                Divider()
-                ListItem {
-                    TextField(
-                        value = url,
-                        onValueChange = { onlineUrl = it },
+                        value = title,
+                        onValueChange = { title = it },
                         label = { Text("title") },
                         singleLine = true,
                         modifier = Modifier
@@ -246,32 +152,146 @@ fun UpdateEventScreenUi(event: UpdateCalendarEventUI, saveEvent: (UpdateCalendar
                             .fillMaxWidth()
                     )
                 }
-            }
-            Divider()
-            FloatingActionButton(
-                content = { Text(text = "save") },
-                onClick = {
-                    saveEvent(
-                        event.copy(
-                            title = title,
-                            description = description,
-                            timeSpan = TimeSpan(timeStart, timeEnd),
-                            date = date,
-                            timeSlot = timeSlot,
-                            cycleType = cycleType,
-                            cancelOnHolidays = cancelOnHoldidays,
-                            lectureInfo = LectureInfo.createBasedOnValues(
-                                felixUrl,
-                                location,
-                                onlineUrl
-                            )
-                        )
+                Divider()
+                ListItem {
+                    TextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text("description") },
+                        singleLine = false,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     )
-                },
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-            )
+                }
+                ListItem(
+                    text = {
+                        Text(
+                            text = "Selected timeslot: $timeSlot",
+                            modifier = Modifier.padding(5.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .clickable(
+                            onClick = { openTimeSlotDialog.value = true }
+                        )
+                )
+                when (timeSlot) {
+                    TimeSlot.CUSTOM -> {
+                        Divider()
+                        ListItem(
+                            text = {
+                                Text(
+                                    text = "From: $timeStart",
+                                    modifier = Modifier.padding(5.dp)
+                                )
+                            },
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = {
+                                        timePickerStart.show(fragmentManager, "TimePickerStart")
+                                    }
+                                )
+                        )
+                        Divider()
+                        ListItem(
+                            text = {
+                                Text(
+                                    text = "To: $timeEnd",
+                                    modifier = Modifier.padding(5.dp)
+                                )
+                            },
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = {
+                                        timePickerEnd.show(fragmentManager, "TimePickerEnd")
+                                    }
+                                )
+                        )
+                    }
+                    else -> Unit
+                }
+
+                Divider()
+                ListItem(
+                    text = {
+                        Text(
+                            text = "Selected date: $date",
+                            modifier = Modifier.padding(5.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .clickable(
+                            onClick = {
+                                datePicker.show(fragmentManager, "DatePicker")
+                            }
+                        )
+                )
+                Divider()
+                ListItem(
+                    text = {
+                        Text(
+                            text = "Selected cycletype: $cycleType",
+                            modifier = Modifier.padding(5.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .clickable(
+                            onClick = { openCycleTypeDialog.value = true }
+                        )
+                )
+                Divider()
+                Row() {
+                    Text(text = "cancel on holidays", modifier = Modifier.padding(5.dp))
+                    Switch(
+                        checked = cancelOnHoldidays,
+                        onCheckedChange = { cancelOnHoldidays = it }
+                    )
+                }
+
+                felixUrl?.let { url ->
+                    Divider()
+                    ListItem {
+                        TextField(
+                            value = url,
+                            onValueChange = { felixUrl = it },
+                            label = { Text("Felix-Url") },
+                            singleLine = true,
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+                location?.let { loc ->
+                    Divider()
+                    ListItem {
+                        TextField(
+                            value = loc,
+                            onValueChange = { location = it },
+                            label = { Text("Location") },
+                            singleLine = true,
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+                onlineUrl?.let { url ->
+                    Divider()
+                    ListItem {
+                        TextField(
+                            value = url,
+                            onValueChange = { onlineUrl = it },
+                            label = { Text("title") },
+                            singleLine = true,
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+            }
         }
     }
 
