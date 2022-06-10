@@ -15,6 +15,11 @@ sealed class NavigationItem {
         override val title = "Event"
         fun createRoute(eventId: EventId) = "event/${eventId.value}"
     }
+    object UpdateEvent : NavigationItem() {
+        override val routeName = "updateevent/{eventId}"
+        override val title = "Update Event"
+        fun createRoute(eventId: EventId) = "updateevent/${eventId.value}"
+    }
 }
 
 sealed class BottomNavigationItem: NavigationItem() {
