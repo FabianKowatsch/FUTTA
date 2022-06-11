@@ -36,8 +36,8 @@ fun MainNavigationGraph(navController: NavHostController, viewModel: MainViewMod
             viewModel.currentRoute.value  = NavigationItem.Event.routeName
             CalendarEventScreen(eventId = EventId(eventId), navController = navController)
         }
-        composable(BottomNavigationItem.AddEvent.routeName) {
-            viewModel.currentRoute.value = BottomNavigationItem.AddEvent.routeName
+        composable(NavigationItem.AddEvent.routeName) {
+            viewModel.currentRoute.value = NavigationItem.AddEvent.routeName
             AddEventScreen(navController = navController)
         }
         composable(route = NavigationItem.UpdateEvent.routeName) { backStackEntry ->

@@ -12,7 +12,7 @@ import com.example.futta.R
 import java.time.LocalDate
 
 @Composable
-fun MainBottomNavigation(navController: NavController) {
+fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Unit) {
     BottomNavigation {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -20,28 +20,32 @@ fun MainBottomNavigation(navController: NavController) {
         listOf(
             BottomNavigationItem.Month,
             BottomNavigationItem.Day,
-            BottomNavigationItem.AddEvent
+            BottomNavigationItem.Options
         ).forEach { navItem ->
             BottomNavigationItem(
-                    modifier = Modifier.background(colorResource(id = R.color.green_3100)),
+                modifier = Modifier.background(colorResource(id = R.color.green_3100)),
                 selected = currentRoute == navItem.routeName,
                 icon = {
-                       Icon(navItem.icon, contentDescription = null)
+                    Icon(navItem.icon, contentDescription = null)
                 },
-               label = { Text(navItem.title)},
+                label = { Text(navItem.title) },
                 onClick = {
-                   val route =  when(navItem.routeName){
+                    val route = when (navItem.routeName) {
                         BottomNavigationItem.Day.routeName -> BottomNavigationItem.Day.createRoute("${LocalDate.now()}")
-                       else -> navItem.routeName
+                        else -> navItem.routeName
                     }
-                    navController.navigate(route) {
-                        navController.graph.startDestinationRoute?.let { screen_route ->
-                            popUpTo(screen_route) {
-                                saveState = true
+                    if (route == BottomNavigationItem.Options.routeName) {
+                        onOptionsClick()
+                    } else {
+                        navController.navigate(route) {
+                            navController.graph.startDestinationRoute?.let { screen_route ->
+                                popUpTo(screen_route) {
+                                    saveState = true
+                                }
                             }
+                            launchSingleTop = true
+                            restoreState = false
                         }
-                        launchSingleTop = true
-                        restoreState = false
                     }
                 },
             )
