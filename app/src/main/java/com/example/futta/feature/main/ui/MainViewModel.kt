@@ -1,7 +1,6 @@
 package com.example.futta.feature.main.ui
 
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

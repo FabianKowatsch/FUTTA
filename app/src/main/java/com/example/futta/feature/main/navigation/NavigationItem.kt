@@ -1,9 +1,7 @@
 package com.example.futta.feature.main.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.futta.domain.model.EventId
 
@@ -19,6 +17,10 @@ sealed class NavigationItem {
         override val routeName = "updateevent/{eventId}"
         override val title = "Update Event"
         fun createRoute(eventId: EventId) = "updateevent/${eventId.value}"
+    }
+    object AddEvent : NavigationItem() {
+        override val title = "Add Event"
+        override val routeName = "addevent"
     }
 }
 
@@ -38,10 +40,11 @@ sealed class BottomNavigationItem: NavigationItem() {
         override val routeName = "day/{date}"
         fun createRoute(date: String) = "day/$date"
     }
-    object AddEvent : BottomNavigationItem() {
-        override val title = "Add Event"
-        override val icon = Icons.Outlined.AddCircle
-        override val routeName = "addevent"
+    object Options : BottomNavigationItem() {
+        override val title = "Options"
+        override val icon = Icons.Outlined.MoreVert
+        override val routeName = "options"
     }
+
 }
 
