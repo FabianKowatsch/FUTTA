@@ -49,15 +49,6 @@ fun MonthScreenUi(navController: NavController) {
             }
         )
 
-        Text(
-            text = "Today",
-            modifier = Modifier
-                .wrapContentWidth(),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 10.sp,
-            color = Color(0xFF03B670),
-            textAlign = TextAlign.Center,
-        )
 
     }
 }

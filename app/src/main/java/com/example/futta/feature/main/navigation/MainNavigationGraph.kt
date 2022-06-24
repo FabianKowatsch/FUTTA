@@ -46,6 +46,10 @@ fun MainNavigationGraph(navController: NavHostController, viewModel: MainViewMod
             viewModel.currentRoute.value  = NavigationItem.UpdateEvent.routeName
             UpdateEventScreen(eventId = EventId(eventId), navController = navController)
         }
+        composable(NavigationItem.Settings.routeName) {
+            viewModel.currentRoute.value = NavigationItem.AddEvent.routeName
+            Text(text = "Settings")
+        }
     }
 
 }

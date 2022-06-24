@@ -22,6 +22,10 @@ sealed class NavigationItem {
         override val title = "Add Event"
         override val routeName = "addevent"
     }
+    object Settings : NavigationItem() {
+        override val title = "Settings"
+        override val routeName = "settings"
+    }
 }
 
 sealed class BottomNavigationItem: NavigationItem() {

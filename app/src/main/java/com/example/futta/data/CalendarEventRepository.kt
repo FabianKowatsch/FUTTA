@@ -55,7 +55,7 @@ class CalendarEventRepository {
         }
         allEvents[eventIndex] = event
     }
-    suspend fun deleteEvent(event: CalendarEvent) {
-        allEvents.remove(event)
+    suspend fun deleteEvent(id: EventId) {
+        allEvents.removeIf { it.id.value == id.value }
     }
 }

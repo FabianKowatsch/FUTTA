@@ -142,7 +142,7 @@ fun UpdateEventScreenUi(
         LazyColumn(state = scrollState) {
             items(count = 1) {
                 ListItem {
-                    TextField(
+                    OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
                         label = { Text("title") },
@@ -152,9 +152,9 @@ fun UpdateEventScreenUi(
                             .fillMaxWidth()
                     )
                 }
-                Divider()
+
                 ListItem {
-                    TextField(
+                    OutlinedTextField(
                         value = description,
                         onValueChange = { description = it },
                         label = { Text("description") },
@@ -164,6 +164,7 @@ fun UpdateEventScreenUi(
                             .fillMaxWidth()
                     )
                 }
+                Divider()
                 ListItem(
                     text = {
                         Text(
@@ -241,18 +242,24 @@ fun UpdateEventScreenUi(
                         )
                 )
                 Divider()
-                Row() {
-                    Text(text = "cancel on holidays", modifier = Modifier.padding(5.dp))
-                    Switch(
-                        checked = cancelOnHoldidays,
-                        onCheckedChange = { cancelOnHoldidays = it }
-                    )
-                }
-
+                ListItem(
+                    text = {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(5.dp)
+                        ) {
+                            Text(text = "cancel on holidays")
+                            Switch(
+                                checked = cancelOnHoldidays,
+                                onCheckedChange = { cancelOnHoldidays = it }
+                            )
+                        }
+                    })
+                Divider()
                 felixUrl?.let { url ->
-                    Divider()
                     ListItem {
-                        TextField(
+                        OutlinedTextField(
                             value = url,
                             onValueChange = { felixUrl = it },
                             label = { Text("Felix-Url") },
@@ -264,9 +271,8 @@ fun UpdateEventScreenUi(
                     }
                 }
                 location?.let { loc ->
-                    Divider()
                     ListItem {
-                        TextField(
+                        OutlinedTextField(
                             value = loc,
                             onValueChange = { location = it },
                             label = { Text("Location") },
@@ -278,9 +284,8 @@ fun UpdateEventScreenUi(
                     }
                 }
                 onlineUrl?.let { url ->
-                    Divider()
                     ListItem {
-                        TextField(
+                        OutlinedTextField(
                             value = url,
                             onValueChange = { onlineUrl = it },
                             label = { Text("title") },

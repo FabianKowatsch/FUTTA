@@ -37,18 +37,21 @@ fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Uni
                     if (route == BottomNavigationItem.Options.routeName) {
                         onOptionsClick()
                     } else {
-                        navController.navigate(route) {
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
+                        navigateTo(navController, route)
                     }
                 },
             )
         }
+    }
+}
+fun navigateTo(navController: NavController, route: String) {
+    navController.navigate(route) {
+        navController.graph.startDestinationRoute?.let { screen_route ->
+            popUpTo(screen_route) {
+                saveState = true
+            }
+        }
+        launchSingleTop = true
+        restoreState = false
     }
 }
