@@ -1,14 +1,17 @@
 package com.example.futta.feature.main.ui
 
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
+import com.example.futta.App
 import com.example.futta.domain.ObserveEventsUseCase
 import com.example.futta.domain.model.CalendarEvent
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel() : ViewModel() {
     val currentRoute = MutableLiveData<String>("")
+    val darkMode = App.settingsRepo.isDarkMode().asLiveData()
+
     fun bindUi(): LiveData<List<CalendarEvent>> = ObserveEventsUseCase()().asLiveData()
-}
+    fun toggleDarkMode() {
+        viewModelScope.launch { App.settingsRepo.toggleDarkMode()} }
+
+    }

@@ -14,6 +14,7 @@ import com.example.futta.feature.day.ui.DayScreen
 import com.example.futta.feature.event.ui.CalendarEventScreen
 import com.example.futta.feature.main.ui.MainViewModel
 import com.example.futta.feature.month.ui.MonthScreenUi
+import com.example.futta.feature.settings.ui.SettingsScreen
 import java.time.LocalDate
 
 @Composable
@@ -48,7 +49,7 @@ fun MainNavigationGraph(navController: NavHostController, viewModel: MainViewMod
         }
         composable(NavigationItem.Settings.routeName) {
             viewModel.currentRoute.value = NavigationItem.AddEvent.routeName
-            Text(text = "Settings")
+            SettingsScreen(viewModel = viewModel)
         }
     }
 

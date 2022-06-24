@@ -63,7 +63,10 @@ fun MainScreenUI(viewModel: MainViewModel) {
             ModalBottomSheetLayout(
                 sheetState = modalState,
                 sheetContent = {
-                    BottomSheet(viewModel, navController)
+                    BottomSheet(
+                        viewModel,
+                        navController,
+                        onOptionSelect = { scope.launch { modalState.hide() } })
                 }) {
                 MainNavigationGraph(navController, viewModel)
             }
@@ -90,7 +93,11 @@ fun ActionButton(viewModel: MainViewModel, navController: NavController) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheet(viewModel: MainViewModel, navController: NavController) {
+fun BottomSheet(
+    viewModel: MainViewModel,
+    navController: NavController,
+    onOptionSelect: () -> Unit
+) {
     val scope = rememberCoroutineScope()
     val route by viewModel.currentRoute.observeAsState()
     val optionsList: List<SheetOption> = when (route) {
@@ -103,6 +110,7 @@ fun BottomSheet(viewModel: MainViewModel, navController: NavController) {
                 icon = { Icon(option.icon, option.name) },
                 text = { Text(text = option.name) },
                 modifier = Modifier.clickable(onClick = {
+                    onOptionSelect()
                     when (option) {
                         is SheetOption.Delete -> {
                             val currentEventId =
@@ -125,6 +133,7 @@ fun BottomSheet(viewModel: MainViewModel, navController: NavController) {
                             navigateTo(navController, NavigationItem.Settings.routeName)
                         }
                     }
+
                 })
             )
         }
