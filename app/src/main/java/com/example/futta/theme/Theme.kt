@@ -11,7 +11,7 @@ private val DarkColorPalette = darkColors(
     primaryVariant = DarkItem,
     secondary = DarkGreen,
     onPrimary = LightItem,
-    onSecondary = LightItem
+    onSecondary = LightItem,
 )
 
 private val LightColorPalette = lightColors(
@@ -19,7 +19,7 @@ private val LightColorPalette = lightColors(
     primaryVariant = LightItem,
     secondary = LightGreen,
     onPrimary = DarkBG,
-    onSecondary = LightItem
+    onSecondary = LightItem,
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,

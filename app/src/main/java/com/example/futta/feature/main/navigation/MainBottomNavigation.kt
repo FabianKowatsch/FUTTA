@@ -23,7 +23,7 @@ fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Uni
             BottomNavigationItem.Options
         ).forEach { navItem ->
             BottomNavigationItem(
-                modifier = Modifier.background(colorResource(id = R.color.green_3100)),
+                modifier = Modifier.background(MaterialTheme.colors.secondary),
                 selected = currentRoute == navItem.routeName,
                 icon = {
                     Icon(navItem.icon, contentDescription = null)
