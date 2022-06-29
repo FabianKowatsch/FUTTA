@@ -3,12 +3,13 @@ package com.example.futta.feature.day.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.futta.R
+import com.example.futta.domain.DeleteEventUseCase
+import com.example.futta.domain.model.EventId
 import com.example.futta.feature.main.navigation.BottomNavigationItem
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -36,6 +40,7 @@ fun DayScreen(
     DayScreenUi(date = date, events = events, navController = navController)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DayScreenUi(
     date: LocalDate,
@@ -43,6 +48,9 @@ fun DayScreenUi(
     navController: NavController
 ) {
     val dateString = date.toString()
+    val eventList = events.toMutableStateList()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             Column(
@@ -59,29 +67,59 @@ fun DayScreenUi(
             }
         },
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(end = 2.dp, bottom = 2.dp)
-                .background(Color(0xFF777777))
-                .padding(4.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        if (events.isNotEmpty()) {
+            LazyColumn {
+                itemsIndexed(
+                    items = eventList,
+                    key = { _, item ->
+                        item.id.value
+                    }
+                ) { _, item ->
+                    val state = rememberDismissState(
+                        confirmStateChange = {
+                            if (it == DismissValue.DismissedToStart) {
+                                eventList.remove(item)
+                                scope.launch { DeleteEventUseCase()(item.id) }
+                            }
+                            true
+                        }
+                    )
 
-            ) {
-
-            if (events.isNotEmpty()) {
-                events.forEach { event ->
-                    CalendarEventTeaserItem(event, navController = navController)
-
+                    SwipeToDismiss(
+                        state = state,
+                        background = {
+                            val color = when (state.dismissDirection) {
+                                DismissDirection.EndToStart -> MaterialTheme.colors.error
+                                else -> Color.Transparent
+                            }
+                            val tintColor = when (state.dismissDirection) {
+                                DismissDirection.EndToStart -> Color.White
+                                else -> Color.Transparent
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = color)
+                                    .padding(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = "Delete",
+                                    tint = tintColor,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                )
+                            }
+                        },
+                        dismissContent = {
+                            CalendarEventTeaserItem(item, navController)
+                        },
+                        directions = setOf(DismissDirection.EndToStart)
+                    )
+                    Divider()
                 }
-
-            } else {
-                Text(
-                    text = LocalContext.current.getString(R.string.no_events),
-                    color = Color(0xFFFFFFFF),
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
         }
+        else
+            Text(context.getString(R.string.no_events))
     }
 }
