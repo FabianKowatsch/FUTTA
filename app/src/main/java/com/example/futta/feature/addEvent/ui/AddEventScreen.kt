@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
+import com.example.futta.R
 import com.example.futta.domain.model.*
 import com.example.futta.feature.main.navigation.BottomNavigationItem
 import com.example.futta.feature.main.ui.MainViewModel
@@ -62,7 +63,8 @@ fun UpdateEventScreenUi(
     saveEvent: (UpdateCalendarEventUI) -> Unit,
     navController: NavController
 ) {
-    val fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
+    val context = LocalContext.current
+    val fragmentManager = (context as FragmentActivity).supportFragmentManager
     var title by rememberSaveable { mutableStateOf(value = event.title) }
     var description by rememberSaveable { mutableStateOf(value = event.description) }
     var timeStart by rememberSaveable { mutableStateOf(value = event.timeSpan.timeStart) }
@@ -88,7 +90,7 @@ fun UpdateEventScreenUi(
             .setMinute(LocalTime.now().minute)
             .build()
     val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Select date")
+        .setTitleText(context.getString(R.string.select_date))
         .build()
     timePickerStart.addOnPositiveButtonClickListener {
         timeStart = LocalTime.of(timePickerStart.hour, timePickerStart.minute)
@@ -125,7 +127,7 @@ fun UpdateEventScreenUi(
                         )
                     )
                 )
-                navController.navigate(BottomNavigationItem.Day.createRoute("${date}")) {
+                navController.navigate(BottomNavigationItem.Day.createRoute("$date")) {
                     navController.graph.startDestinationRoute?.let { screen_route ->
                         popUpTo(screen_route) {
                             saveState = true
@@ -145,7 +147,7 @@ fun UpdateEventScreenUi(
                     OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
-                        label = { Text("title") },
+                        label = { Text(context.getString(R.string.title)) },
                         singleLine = true,
                         modifier = Modifier
                             .padding(5.dp)
@@ -157,7 +159,7 @@ fun UpdateEventScreenUi(
                     OutlinedTextField(
                         value = description,
                         onValueChange = { description = it },
-                        label = { Text("description") },
+                        label = { Text(context.getString(R.string.description)) },
                         singleLine = false,
                         modifier = Modifier
                             .padding(5.dp)
@@ -168,7 +170,7 @@ fun UpdateEventScreenUi(
                 ListItem(
                     text = {
                         Text(
-                            text = "Selected timeslot: $timeSlot",
+                            text = context.getString(R.string.selected_timeslot) + " $timeSlot",
                             modifier = Modifier.padding(5.dp)
                         )
                     },
@@ -183,7 +185,7 @@ fun UpdateEventScreenUi(
                         ListItem(
                             text = {
                                 Text(
-                                    text = "From: $timeStart",
+                                    text = context.getString(R.string.from) + " $timeStart",
                                     modifier = Modifier.padding(5.dp)
                                 )
                             },
@@ -198,7 +200,7 @@ fun UpdateEventScreenUi(
                         ListItem(
                             text = {
                                 Text(
-                                    text = "To: $timeEnd",
+                                    text = context.getString(R.string.to) + " $timeEnd",
                                     modifier = Modifier.padding(5.dp)
                                 )
                             },
@@ -217,7 +219,7 @@ fun UpdateEventScreenUi(
                 ListItem(
                     text = {
                         Text(
-                            text = "Selected date: $date",
+                            text = context.getString(R.string.selected_date) + " $date",
                             modifier = Modifier.padding(5.dp)
                         )
                     },
@@ -232,7 +234,7 @@ fun UpdateEventScreenUi(
                 ListItem(
                     text = {
                         Text(
-                            text = "Selected cycletype: $cycleType",
+                            text = context.getString(R.string.selected_cycletype) + " $cycleType",
                             modifier = Modifier.padding(5.dp)
                         )
                     },
@@ -249,7 +251,7 @@ fun UpdateEventScreenUi(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(5.dp)
                         ) {
-                            Text(text = "cancel on holidays")
+                            Text(text = context.getString(R.string.cancel_on_holidays))
                             Switch(
                                 checked = cancelOnHoldidays,
                                 onCheckedChange = { cancelOnHoldidays = it }
@@ -262,7 +264,7 @@ fun UpdateEventScreenUi(
                         OutlinedTextField(
                             value = url,
                             onValueChange = { felixUrl = it },
-                            label = { Text("Felix-Url") },
+                            label = { Text(context.getString(R.string.felixUrl)) },
                             singleLine = true,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -275,7 +277,7 @@ fun UpdateEventScreenUi(
                         OutlinedTextField(
                             value = loc,
                             onValueChange = { location = it },
-                            label = { Text("Location") },
+                            label = { Text(context.getString(R.string.location)) },
                             singleLine = true,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -288,7 +290,7 @@ fun UpdateEventScreenUi(
                         OutlinedTextField(
                             value = url,
                             onValueChange = { onlineUrl = it },
-                            label = { Text("title") },
+                            label = { Text(context.getString(R.string.onlineUrl)) },
                             singleLine = true,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -306,7 +308,7 @@ fun UpdateEventScreenUi(
                 openCycleTypeDialog.value = false
             },
             title = {
-                Text(text = "Select the cycle type")
+                Text(text = context.getString(R.string.select_cycle))
             },
             text = {
                 Column(Modifier.selectableGroup()) {
@@ -340,7 +342,7 @@ fun UpdateEventScreenUi(
                         openCycleTypeDialog.value = false
                     }
                 ) {
-                    Text("Confirm")
+                    Text(context.getString(R.string.confirm))
                 }
             }
         )
@@ -351,7 +353,7 @@ fun UpdateEventScreenUi(
                 openTimeSlotDialog.value = false
             },
             title = {
-                Text(text = "Select the cycle type")
+                Text(text = context.getString(R.string.select_timeslot))
             },
             text = {
                 Column(Modifier.selectableGroup()) {
@@ -385,7 +387,7 @@ fun UpdateEventScreenUi(
                         openTimeSlotDialog.value = false
                     }
                 ) {
-                    Text("Confirm")
+                    Text(context.getString(R.string.confirm))
                 }
             }
         )

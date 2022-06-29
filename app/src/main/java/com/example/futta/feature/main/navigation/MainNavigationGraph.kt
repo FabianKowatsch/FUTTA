@@ -1,12 +1,9 @@
 package com.example.futta.feature.main.navigation
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.futta.domain.model.EventId
 import com.example.futta.feature.addEvent.ui.AddEventScreen
 import com.example.futta.feature.addEvent.ui.UpdateEventScreen
@@ -15,6 +12,7 @@ import com.example.futta.feature.event.ui.CalendarEventScreen
 import com.example.futta.feature.main.ui.MainViewModel
 import com.example.futta.feature.month.ui.MonthScreenUi
 import com.example.futta.feature.settings.ui.SettingsScreen
+import com.example.futta.feature.week.ui.WeekScreenUi
 import java.time.LocalDate
 
 @Composable
@@ -24,6 +22,10 @@ fun MainNavigationGraph(navController: NavHostController, viewModel: MainViewMod
         composable(BottomNavigationItem.Month.routeName) {
             viewModel.currentRoute.value = BottomNavigationItem.Month.routeName
             MonthScreenUi(navController)
+        }
+        composable(BottomNavigationItem.Week.routeName) {
+            viewModel.currentRoute.value = BottomNavigationItem.Week.routeName
+            WeekScreenUi(navController)
         }
         composable(route = BottomNavigationItem.Day.routeName) { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date")

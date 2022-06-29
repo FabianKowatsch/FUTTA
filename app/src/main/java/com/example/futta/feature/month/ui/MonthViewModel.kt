@@ -22,6 +22,15 @@ class MonthViewModel() : ViewModel() {
         }.sortedBy { it.dayOfMonth}
        return result
     }
+    fun bindUi(): LiveData<List<MonthCalendarEventUI>> = liveData {
+        val result = GetEventsUseCase()().map { calendarEvent ->
+            MonthCalendarEventUI(
+                date = calendarEvent.date,
+                cycleType = calendarEvent.cycleType
+            )
+        }.sortedBy { it.date }
+        emit(result)
+    }
 }
 fun eventIsInMonth(eventDate: LocalDate, selectedMonth: Month, cycleType: CycleType): Boolean {
     return when(cycleType) {

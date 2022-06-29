@@ -27,37 +27,47 @@ import com.example.futta.feature.main.navigation.BottomNavigationItem
 import java.time.LocalDate
 
 @Composable
-fun DayScreen(viewModel: DayViewModel = viewModel(), date: LocalDate, navController: NavController) {
+fun DayScreen(
+    viewModel: DayViewModel = viewModel(),
+    date: LocalDate,
+    navController: NavController
+) {
     val events by viewModel.bindUi(LocalContext.current, date).observeAsState(emptyList())
     DayScreenUi(date = date, events = events, navController = navController)
 }
 
 @Composable
-fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>, navController: NavController) {
+fun DayScreenUi(
+    date: LocalDate,
+    events: List<CalendarEventTeaserUI>,
+    navController: NavController
+) {
     val dateString = date.toString()
     Scaffold(
-            topBar = {
-                Column(modifier = Modifier
-                        .background(colorResource(id = R.color.green_3100))
-                        .fillMaxWidth()
-                        .padding(10.dp, 2.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                            text = dateString,
-                            color = colorResource(id = R.color.white)
-                    )
-                }
-            },
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .background(colorResource(id = R.color.green_3100))
+                    .fillMaxWidth()
+                    .padding(10.dp, 2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = dateString,
+                    color = colorResource(id = R.color.white)
+                )
+            }
+        },
     ) {
         Column(
-                modifier = Modifier
-                        .fillMaxSize()
-                        .padding(end = 2.dp, bottom = 2.dp)
-                        .background(Color(0xFF777777), shape = RoundedCornerShape(4.dp))
-                        .padding(4.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(end = 2.dp, bottom = 2.dp)
+                .background(Color(0xFF777777))
+                .padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
 
-                ) {
+            ) {
 
             if (events.isNotEmpty()) {
                 events.forEach { event ->
@@ -67,9 +77,9 @@ fun DayScreenUi(date: LocalDate, events: List<CalendarEventTeaserUI>, navControl
 
             } else {
                 Text(
-                        text = "Für diesen Tag sind bisher keine Veranstaltungen geplant",
-                        color = Color(0xFFFFFFFF),
-                        overflow = TextOverflow.Ellipsis,
+                    text = LocalContext.current.getString(R.string.no_events),
+                    color = Color(0xFFFFFFFF),
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

@@ -14,6 +14,13 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="calendar_text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="calendar_text_night">
         <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="calendar_decorator">
+        <item name="android:textColor">@color/green_3000</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

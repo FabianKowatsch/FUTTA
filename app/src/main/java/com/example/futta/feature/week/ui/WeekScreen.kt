@@ -1,7 +1,9 @@
-package com.example.futta.feature.month.ui
+package com.example.futta.feature.week.ui
 
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -10,16 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavController
-import com.example.futta.feature.main.navigation.BottomNavigationItem
-import java.time.LocalDate
 import com.example.futta.R
-import com.prolificinteractive.materialcalendarview.*
+import com.example.futta.feature.main.navigation.BottomNavigationItem
+import com.example.futta.feature.month.ui.DayDecoratorImpl
+import com.example.futta.feature.month.ui.MonthViewModel
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.CalendarMode
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import java.time.LocalDate
 import androidx.lifecycle.viewmodel.compose.viewModel
-import java.util.*
+import androidx.navigation.NavController
 
 @Composable
-fun MonthScreenUi(navController: NavController, viewModel: MonthViewModel = viewModel()) {
+fun WeekScreenUi(navController: NavController, viewModel: MonthViewModel = viewModel()) {
     val events by viewModel.bindUi().observeAsState(emptyList())
     val isDarkMode by viewModel.darkMode.observeAsState()
     val eventBackground = AppCompatResources.getDrawable(LocalContext.current, R.drawable.month_event_background)
@@ -33,6 +38,7 @@ fun MonthScreenUi(navController: NavController, viewModel: MonthViewModel = view
             { MaterialCalendarView(it) },
             modifier = Modifier.wrapContentWidth()
         ) { view ->
+            view.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit()
             view.currentDate = CalendarDay.today()
             view.setTitleMonths(R.array.month_labels)
             view.setWeekDayLabels(R.array.weekday_labels)

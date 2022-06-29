@@ -19,4 +19,24 @@
     <string name="friday">Fr</string>
     <string name="saturday">Sa</string>
     <string name="sunday">So</string>
+    <string name="no_events">Für diesen Tag sind bisher keine Veranstaltungen geplant</string>
+    <string name="title">Titel</string>
+    <string name="description">Beschreibung</string>
+    <string name="selected_timeslot">Gewähltes Zeitfenster: </string>
+    <string name="from">Von: </string>
+    <string name="to">Bis: </string>
+    <string name="selected_date">Gewähltes Datum: </string>
+    <string name="cancel_on_holidays">Feiertage berücksichtigen</string>
+    <string name="selected_cycletype">Gewählter Zyklus: </string>
+    <string name="felixUrl">Felix-URL</string>
+    <string name="location">Ort</string>
+    <string name="onlineUrl">Online-Raum</string>
+    <string name="month">Monat</string>
+    <string name="day">Tag</string>
+    <string name="week">Woche</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="select_time">Zeit auswählen</string>
+    <string name="select_timeslot">Zeitfenster auswählen</string>
+    <string name="select_date">Datum auswählen</string>
+    <string name="select_cycle">Zyklus auswählen</string>
 </resources>

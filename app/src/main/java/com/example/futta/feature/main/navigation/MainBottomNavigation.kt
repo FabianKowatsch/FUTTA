@@ -12,7 +12,7 @@ import com.example.futta.R
 import java.time.LocalDate
 
 @Composable
-fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Unit) {
+fun MainBottomNavigation(navController: NavController) {
     BottomNavigation {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -20,7 +20,7 @@ fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Uni
         listOf(
             BottomNavigationItem.Month,
             BottomNavigationItem.Day,
-            BottomNavigationItem.Options
+            BottomNavigationItem.Week
         ).forEach { navItem ->
             BottomNavigationItem(
                 modifier = Modifier.background(MaterialTheme.colors.secondary),
@@ -34,11 +34,7 @@ fun MainBottomNavigation(navController: NavController, onOptionsClick: () -> Uni
                         BottomNavigationItem.Day.routeName -> BottomNavigationItem.Day.createRoute("${LocalDate.now()}")
                         else -> navItem.routeName
                     }
-                    if (route == BottomNavigationItem.Options.routeName) {
-                        onOptionsClick()
-                    } else {
                         navigateTo(navController, route)
-                    }
                 },
             )
         }

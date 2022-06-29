@@ -10,7 +10,6 @@ class MainViewModel() : ViewModel() {
     val currentRoute = MutableLiveData<String>("")
     val darkMode = App.settingsRepo.isDarkMode().asLiveData()
 
-    fun bindUi(): LiveData<List<CalendarEvent>> = ObserveEventsUseCase()().asLiveData()
     fun toggleDarkMode() {
         viewModelScope.launch { App.settingsRepo.toggleDarkMode()} }
 
