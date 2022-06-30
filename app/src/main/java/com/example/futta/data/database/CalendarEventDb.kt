@@ -6,7 +6,7 @@ import com.example.futta.domain.model.CycleType
 import java.time.LocalDate
 import java.time.LocalTime
 
-@Entity(tableName = "calendar_event")
+@Entity(tableName = "event")
 data class CalendarEventDb(
     @PrimaryKey
     val id: String,

@@ -1,15 +1,9 @@
 package com.example.futta.feature.month.ui
 
-import android.content.Context
 import androidx.lifecycle.*
 import com.example.futta.App
 import com.example.futta.domain.GetEventsUseCase
-import com.example.futta.domain.ObserveEventsUseCase
-import com.example.futta.domain.model.CalendarEvent
 import com.example.futta.domain.model.CycleType
-import com.example.futta.feature.day.ui.CalendarEventTeaserUI
-import com.example.futta.feature.day.ui.eventIsOnDate
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
 
