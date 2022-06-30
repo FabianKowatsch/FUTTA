@@ -1,12 +1,11 @@
 package com.example.futta.feature.event.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -15,22 +14,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.futta.R
 import com.example.futta.domain.model.EventId
 import com.example.futta.domain.model.LectureInfo
-import com.example.futta.domain.model.TimeSpan
-import com.example.futta.feature.main.navigation.BottomNavigationItem
 import com.example.futta.feature.main.navigation.NavigationItem
-import java.time.temporal.ChronoUnit
+import java.lang.Exception
 
 @Composable
 fun CalendarEventScreen(
@@ -48,6 +42,7 @@ fun CalendarEventScreen(
 fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController) {
     if (event != null) {
         val dateString = event.date.toString()
+        val uriHandler = LocalUriHandler.current
         Scaffold(
             topBar = {
                 Column(
@@ -110,22 +105,37 @@ fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController)
                     }
 
                     Divider()
-                    event.lectureInfo?.let {
+                    event.lectureInfo.let {
                         val info = LectureInfo.getValuesBasedOnType(it)
                         info["felixUrl"]?.let {
-                            ListItem(icon = {          Icon(
-                                imageVector = Icons.Outlined.Language,
-                                contentDescription = ""
-                            )}) {
+                            ListItem(icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Language,
+                                    contentDescription = ""
+                                )
+                            }, modifier = Modifier.clickable {
+                                try {
+                                    uriHandler.openUri(it)
+                                } catch (e: Exception) {
+                                }
+                            }) {
                                 Text(it)
                             }
                             Divider()
                         }
                         info["onlineUrl"]?.let {
-                            ListItem(icon = {          Icon(
-                                imageVector = Icons.Outlined.Duo,
-                                contentDescription = ""
-                            )}) {
+                            ListItem(icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Duo,
+                                    contentDescription = ""
+                                )
+                            }, modifier = Modifier.clickable {
+                                try {
+                                    uriHandler.openUri(it)
+                                } catch (e: Exception) {
+                                }
+
+                            }) {
                                 Text(it)
                             }
                             Divider()
