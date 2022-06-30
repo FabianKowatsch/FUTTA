@@ -40,7 +40,7 @@ sealed class BottomNavigationItem: NavigationItem() {
     }
     object Day : BottomNavigationItem() {
         override val title = "Day"
-        override val icon = Icons.Outlined.Notifications
+        override val icon = Icons.Outlined.List
         override val routeName = "day/{date}"
         fun createRoute(date: String) = "day/$date"
     }

@@ -47,6 +47,7 @@ fun DayScreenUi(
     events: List<CalendarEventTeaserUI>,
     navController: NavController
 ) {
+
     val dateString = date.toString()
     val eventList = events.toMutableStateList()
     val scope = rememberCoroutineScope()
@@ -57,11 +58,11 @@ fun DayScreenUi(
                 modifier = Modifier
                     .background(colorResource(id = R.color.green_3100))
                     .fillMaxWidth()
-                    .padding(10.dp, 2.dp),
+                    .padding(10.dp, 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = dateString,
+                    text = dateString, style = MaterialTheme.typography.caption,
                     color = colorResource(id = R.color.white)
                 )
             }

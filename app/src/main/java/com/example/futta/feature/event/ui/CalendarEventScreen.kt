@@ -5,14 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -36,29 +36,36 @@ import com.example.futta.feature.main.navigation.NavigationItem
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun CalendarEventScreen(viewModel: CalendarEventViewModel = viewModel(), eventId: EventId, navController: NavController) {
+fun CalendarEventScreen(
+    viewModel: CalendarEventViewModel = viewModel(),
+    eventId: EventId,
+    navController: NavController
+) {
     val event by viewModel.bindUi(LocalContext.current, eventId = eventId).observeAsState()
     CalendarEventScreenUi(event = event, navController)
 
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController) {
     if (event != null) {
         val dateString = event.date.toString()
         Scaffold(
-                topBar = {
-                    Column(modifier = Modifier
-                            .background(colorResource(id = R.color.green_3100))
-                            .fillMaxWidth()
-                            .padding(10.dp, 2.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                                text = dateString,
-                                color = colorResource(id = R.color.white)
-                        )
-                    }
-                },
+            topBar = {
+                Column(
+                    modifier = Modifier
+                        .background(colorResource(id = R.color.green_3100))
+                        .fillMaxWidth()
+                        .padding(10.dp, 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = dateString, style = MaterialTheme.typography.caption,
+                        color = colorResource(id = R.color.white)
+                    )
+                }
+            },
             floatingActionButton = {
                 FloatingActionButton(
                     content = { Icon(imageVector = Icons.Outlined.Edit, contentDescription = "") },
@@ -72,52 +79,70 @@ fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController)
                             launchSingleTop = true
                             restoreState = false
                         }
-                    }
+                    },
+                    backgroundColor = MaterialTheme.colors.secondaryVariant
                 )
             }
         ) {
-            Column(
+            LazyColumn() {
+                items(count = 1) {
+                    ListItem() {
+                        Text(
+                            event.title,
+                            style = MaterialTheme.typography.h2,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    Divider()
+                    ListItem(icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = ""
+                        )
+                    }) {
+                        Text(event.description)
+                    }
+                    Divider()
+                    ListItem(icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = ""
+                        )
+                    }) {
+                        Text(event.timeSpan.timeStart.toString() + " - " + event.timeSpan.timeEnd.toString())
+                    }
 
-            ) {
-                Text(
-                        modifier = Modifier
-                                .padding(2.5.dp),
-                        text = event.timeSpan.timeStart.truncatedTo(ChronoUnit.MINUTES).toString(),
-                        fontSize = 12.sp,
-                )
-            }
-            Column(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                        text = event.title,
-                        //  color = Color(0xFFFFFFFF),
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                )
-            }
-            Column(
+                    Divider()
+                    event.lectureInfo?.let {
+                        val info = LectureInfo.getValuesBasedOnType(it)
+                        info["felixUrl"]?.let {
+                            ListItem() {
+                                Text(it)
+                            }
+                            Divider()
+                        }
+                        info["onlineUrl"]?.let {
+                            ListItem() {
+                                Text(it)
+                            }
+                            Divider()
+                        }
+                        info["location"]?.let {
+                            ListItem(icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Place,
+                                    contentDescription = ""
+                                )
+                            }) {
+                                Text(it)
+                            }
+                            Divider()
+                        }
 
-            ) {
-                Text(
-                        modifier = Modifier
-                                .padding(2.5.dp, 15.dp, 2.5.dp, 2.5.dp),
-                        text = event.timeSpan.timeEnd.truncatedTo(ChronoUnit.MINUTES).toString(),
-                        fontSize = 12.sp,
-                )
-            }
-            Column(
-            ) {
-                Text(
-                        modifier = Modifier
-                                .padding(50.dp, 35.dp, 5.dp, 5.dp),
-                        text = event.description,
-                        fontSize = 12.sp,
-                )
+
+                    }
+
+                }
             }
         }
     }

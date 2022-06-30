@@ -3,6 +3,7 @@ package com.example.futta.feature.main.ui
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -81,7 +83,7 @@ fun FuttaTopBar(
     val context = LocalContext.current
     val route by viewModel.currentRoute.observeAsState()
     TopAppBar(
-        title = { Text(context.getString(R.string.app_name)) },
+        title = { Text(context.getString(R.string.app_name), style = MaterialTheme.typography.h1, modifier = Modifier.fillMaxWidth()) },
         backgroundColor = MaterialTheme.colors.secondary,
         navigationIcon = {
             when (route) {
@@ -127,7 +129,8 @@ fun ActionButton(viewModel: MainViewModel, navController: NavController) {
             onClick = { navigateTo(navController, NavigationItem.AddEvent.routeName) },
             content = {
                 Icon(imageVector = Icons.Outlined.Add, contentDescription = "")
-            }
+            },
+            backgroundColor = MaterialTheme.colors.secondaryVariant
         )
         else -> {}
     }

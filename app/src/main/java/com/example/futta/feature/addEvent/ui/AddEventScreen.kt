@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
@@ -136,7 +137,8 @@ fun UpdateEventScreenUi(
                     launchSingleTop = true
                     restoreState = false
                 }
-            }
+            },
+            backgroundColor = MaterialTheme.colors.secondaryVariant
         )
     }) {
 
@@ -170,7 +172,7 @@ fun UpdateEventScreenUi(
                 ListItem(
                     text = {
                         Text(
-                            text = context.getString(R.string.selected_timeslot) + " $timeSlot",
+                            text = context.getString(R.string.selected_timeslot) + " $timeSlot".lowercase(),
                             modifier = Modifier.padding(5.dp)
                         )
                     },
@@ -234,7 +236,7 @@ fun UpdateEventScreenUi(
                 ListItem(
                     text = {
                         Text(
-                            text = context.getString(R.string.selected_cycletype) + " $cycleType",
+                            text = context.getString(R.string.selected_cycletype) + " $cycleType".lowercase(),
                             modifier = Modifier.padding(5.dp)
                         )
                     },
@@ -329,7 +331,7 @@ fun UpdateEventScreenUi(
                                 onClick = null
                             )
                             Text(
-                                text = type.toString(),
+                                text = type.toString().lowercase(),
                                 modifier = Modifier.padding(5.dp)
                             )
                         }
@@ -342,7 +344,7 @@ fun UpdateEventScreenUi(
                         openCycleTypeDialog.value = false
                     }
                 ) {
-                    Text(context.getString(R.string.confirm))
+                    Text(context.getString(R.string.confirm), color = MaterialTheme.colors.secondaryVariant)
                 }
             }
         )
@@ -374,7 +376,7 @@ fun UpdateEventScreenUi(
                                 onClick = null
                             )
                             Text(
-                                text = slot.toString(),
+                                text = slot.toString().lowercase(),
                                 modifier = Modifier.padding(5.dp)
                             )
                         }
@@ -387,7 +389,7 @@ fun UpdateEventScreenUi(
                         openTimeSlotDialog.value = false
                     }
                 ) {
-                    Text(context.getString(R.string.confirm))
+                    Text(context.getString(R.string.confirm), color = MaterialTheme.colors.secondaryVariant)
                 }
             }
         )
