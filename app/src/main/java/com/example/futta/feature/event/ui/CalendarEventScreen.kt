@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -105,7 +102,7 @@ fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController)
                     Divider()
                     ListItem(icon = {
                         Icon(
-                            imageVector = Icons.Outlined.Info,
+                            imageVector = Icons.Outlined.Schedule,
                             contentDescription = ""
                         )
                     }) {
@@ -116,13 +113,19 @@ fun CalendarEventScreenUi(event: CalendarEventUI?, navController: NavController)
                     event.lectureInfo?.let {
                         val info = LectureInfo.getValuesBasedOnType(it)
                         info["felixUrl"]?.let {
-                            ListItem() {
+                            ListItem(icon = {          Icon(
+                                imageVector = Icons.Outlined.Language,
+                                contentDescription = ""
+                            )}) {
                                 Text(it)
                             }
                             Divider()
                         }
                         info["onlineUrl"]?.let {
-                            ListItem() {
+                            ListItem(icon = {          Icon(
+                                imageVector = Icons.Outlined.Duo,
+                                contentDescription = ""
+                            )}) {
                                 Text(it)
                             }
                             Divider()
